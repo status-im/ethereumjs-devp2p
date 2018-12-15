@@ -151,7 +151,7 @@ class Peer extends EventEmitter {
         break
 
       case 'Body':
-        const body = this._eciesSession.parseBody(data)
+        let body = this._eciesSession.parseBody(data)
         debug(`Received body ${this._socket.remoteAddress}:${this._socket.remotePort} ${body.toString('hex')}`)
 
         this._state = 'Header'

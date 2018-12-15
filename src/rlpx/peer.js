@@ -161,6 +161,13 @@ class Peer extends EventEmitter {
         let code = body[0]
         if (code === 0x80) code = 0
 
+        if (code === 0x81) {
+          // TODO: for some reason, mailserver messages start by 0x81
+          code = body[1];
+          body = body.slice(1);
+        }
+
+
         if (code !== PREFIXES.HELLO && code !== PREFIXES.DISCONNECT && this._hello === null) {
           return this.disconnect(Peer.DISCONNECT_REASONS.PROTOCOL_ERROR)
         }
@@ -194,6 +201,7 @@ class Peer extends EventEmitter {
     const payload = rlp.decode(msg)
     switch (code) {
       case PREFIXES.HELLO:
+      case 0x8f: // TODO: P2P message
         this._hello = {
           protocolVersion: buffer2int(payload[0]),
           clientId: payload[1].toString(),
